@@ -11,15 +11,14 @@ This library requires your account to have access to the IDE + Agent beta. If yo
   
 ## Usage
 - Copy and paste the agent.nut into your agent window.
-- Copy and paste the device.nut code into your device window.
-- Write your code below the /*** END OF API CODE ***/ in the agent and device windows.
-- Modify the Xively object in the agent to correspond to your FEED_ID and API_KEY:
+- Write you agent below the /*** END OF API CODE ***/ line
+
+### Setting up your Xively Credentials
 
 	Xively <- {
-		FEED_ID = "FEED_IT"
-		API_KEY = "API_KEY"
-	}
-	
+		FEED_ID = "FEED_ID"		// Replace "FEED_ID" with the FeedID you are writing to
+		API_KEY = "API_KEY"		// Replace "API_KEY" with the API Key you created
+	}	
 	
 ### Pushing data to a Xively Feed
 
