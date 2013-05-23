@@ -18,6 +18,7 @@ This library requires your account to have access to the IDE + Agent beta. If yo
     	FEED_ID = "FEED_IT"
 	    API_KEY = "API_KEY"
 	}
+	
 - Write your code below the /*** END OF API CODE ***/ in the agent and device windows.
 	
 ### Pushing data to a Xively Feed
