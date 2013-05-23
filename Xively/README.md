@@ -13,6 +13,7 @@ This library requires your account to have access to the IDE + Agent beta. If yo
 - Copy and paste the agent.nut into your agent window.
 - Copy and paste the device.nut code into your device window.
 - Modify the Xively object in the agent to correspond to your FEED_ID and API_KEY:
+
 	Xively <- {
     	FEED_ID = "FEED_IT"
 	    API_KEY = "API_KEY"
