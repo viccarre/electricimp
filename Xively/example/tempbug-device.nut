@@ -1,15 +1,3 @@
-/*******************************************
- * 100k resistor between 3.3v and PIN9
- * NTC Thermsistor between PIN9 and PIN8
- * 
- * To read the value from the NTC:
- * 1) Drive Pin8 LOW
- * 2) Read Pin9
- * 3) Drive Pin8 HIGH
- * 
- * Current will only flow when Pin8 is LOW,
- * which is great for batteries
- ******************************************/
 // Setup our hardware
 NTC <- hardware.pin9;
 NTC_Read_Enable <- hardware.pin8;
