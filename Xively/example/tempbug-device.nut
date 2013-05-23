@@ -1,3 +1,7 @@
+/*****************************************************
+ * This software is released into the public domain. *
+ *****************************************************/
+
 // Setup our hardware
 NTC <- hardware.pin9;
 NTC_Read_Enable <- hardware.pin8;

@@ -3,6 +3,9 @@ A library for easy bi-directional communication between Xively and Electric Imp.
 
 This library requires your account to have access to the IDE + Agent beta. If you do not have access and would like to use the library, please email info@electricimp.com.
 
+## License
+This software is released into the public domain. Anyone is free to copy, modify, publish, use, compile, sell, or distribute this software, either in source code form or as a compiled binary, for any purpose, commercial or non-commercial, and by any means.
+
 ## Features
 - Generic functions for
   - Uploading datapoints
