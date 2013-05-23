@@ -1,66 +1,11 @@
-const FEED_ID = "FEED_ID";
-const API_KEY = "API_KEY";
-
-class XivelyClient
-{
-    /*****************************************
-     * method: PUT
-     * IN:
-     *   feed: a XivelyFeed we are pushing to
-     *   ApiKey: Your Xively API Key
-     * OUT:
-     *   HttpResponse object from Xively
-     *   200 and no body is success
-     *****************************************/
-    function Put(feed, ApiKey)
-    {
-        local url = "https://api.xively.com/v2/feeds/" + feed.FeedID + ".json";
-        local headers = { "X-ApiKey" : ApiKey, "Content-Type":"application/json", "User-Agent" : "Xively-Imp-Lib/1.0" };
-        local request = http.put(url, headers, feed.ToJson());
-
-        return request.sendsync();
-    }
-    
-    /*****************************************
-     * method: GET
-     * IN:
-     *   feed: a XivelyFeed we fulling from
-     *   ApiKey: Your Xively API Key
-     * OUT:
-     *   An updated XivelyFeed object on success
-     *   null on failure
-     *****************************************/
-    function Get(feed, ApiKey)
-    {
-        local url = "https://api.xively.com/v2/feeds/" + feed.FeedID + ".json";
-        local headers = { "X-ApiKey" : ApiKey, "User-Agent" : "xively-Imp-Lib/1.0" };
-        local request = http.get(url, headers);
-        local response = request.sendsync();
-        if(response.statuscode != 200) {
-            server.log("error sending message: " + response.body);
-            return null;
-        }
-        
-        local channel = http.jsondecode(response.body);
-        for (local i = 0; i < channel.datastreams.len(); i++)
-        {
-            for (local j = 0; j < feed.Channels.len(); j++)
-            {
-                if (channel.datastreams[i].id.tolower() == feed.Channels[j].id.tolower())
-                {
-                    //server.log(channel.datastreams[i].id + " : " + channel.datastreams[i].current_value);
-                    feed.Channels[j].current_value = channel.datastreams[i].current_value;
-                    break;
-                }
-            }
-        }
-        
-        return feed;
-    }
+// This is a way to make a "namespace"
+Xively <- {
+    FEED_ID = "FEED_ID"     // Replace with your Feed ID
+    API_KEY = "API_KEY"     // Replace with your API Key
+    triggers = []
 }
 
-class XivelyFeed
-{
+class Xively.Feed{
     FeedID = null;
     Channels = null;
     
@@ -85,8 +30,7 @@ class XivelyFeed
     }
 }
 
-class XivelyChannel
-{
+class Xively.Channel{
     id = null;
     current_value = null;
     
@@ -102,18 +46,120 @@ class XivelyChannel
     function ToJson() { return "{ \"id\" : \"" + this.id + "\", \"current_value\" : \"" + this.current_value + "\" }"; }    
 }
 
-// Create some channels
-voltageChannel <- XivelyChannel("Voltage");
-temperatureChannel <- XivelyChannel("Temperature");
+/*****************************************
+ * method: PUT
+ * IN:
+ *   feed: a XivelyFeed we are pushing to
+ *   ApiKey: Your Xively API Key
+ * OUT:
+ *   HttpResponse object from Xively
+ *   200 and no body is success
+ *****************************************/
+function Xively::Put(feed, ApiKey){
+    local url = "https://api.xively.com/v2/feeds/" + feed.FeedID + ".json";
+    local headers = { "X-ApiKey" : ApiKey, "Content-Type":"application/json", "User-Agent" : "Xively-Imp-Lib/1.0" };
+    local request = http.put(url, headers, feed.ToJson());
 
-// Create a feed and initialize from Xively
-aprilFeed <- XivelyFeed(FEED_ID, [voltageChannel, temperatureChannel]);
-XivelyClient().Get(aprilFeed, API_KEY);
+    return request.sendsync();
+}
+    
+/*****************************************
+ * method: GET
+ * IN:
+ *   feed: a XivelyFeed we fulling from
+ *   ApiKey: Your Xively API Key
+ * OUT:
+ *   An updated XivelyFeed object on success
+ *   null on failure
+ *****************************************/
+function Xively::Get(feed, ApiKey){
+    local url = "https://api.xively.com/v2/feeds/" + feed.FeedID + ".json";
+    local headers = { "X-ApiKey" : ApiKey, "User-Agent" : "xively-Imp-Lib/1.0" };
+    local request = http.get(url, headers);
+    local response = request.sendsync();
+    if(response.statuscode != 200) {
+        server.log("error sending message: " + response.body);
+        return null;
+    }
+    
+    local channel = http.jsondecode(response.body);
+    for (local i = 0; i < channel.datastreams.len(); i++)
+    {
+        for (local j = 0; j < feed.Channels.len(); j++)
+        {
+            if (channel.datastreams[i].id == feed.Channels[j].id)
+            {
+                feed.Channels[j].current_value = channel.datastreams[i].current_value;
+                break;
+            }
+        }
+    }
+    
+    return feed;
+}
 
-// Update some values locally
-voltageChannel.Set(3.3);
-temperatureChannel.Set(23.5);
+device.on("XivelyFeed", function(data) {
+    local channels = [];
+    for(local i = 0; i < data.Datastreams.len(); i++)
+    {
+        local channel = Xively.Channel(data.Datastreams[i].id);
+        channel.Set(data.Datastreams[i].current_value);
+        channels.push(channel);
+    }
+    local feed = Xively.Feed(data.FeedID, channels);
+    local resp = Xively.Put(feed, Xively.API_KEY);
+    server.log("Send data to Xively (FeedID: " + feed.FeedID + ") - " + resp.statuscode + " " + resp.body);
+});
 
-// Push to Xively
-resp <- XivelyClient().Put(aprilFeed, API_KEY);
-server.log(resp.statuscode + " : " + resp.body);
+function Xively::On(feedID, streamID, callback) {
+    if (Xively.triggers == null) Xively.triggers = [];
+    // Make sure the trigger doesn't already exist
+    for(local i = 0; i < triggers.len(); i++) {
+        if (Xively.triggers.FeedID == feedID && Xively.triggers.StreamID = streamID)
+        {
+            server.log("ERROR: A trigger already exists for " + feedID + " : " + streamID);
+            return;
+        }
+    }
+    Xively.triggers.push({ FeedID = feedID, StreamID = streamID, Callback = callback });
+}
+
+function Xively::HttpHandler(request,res) {
+    local responseTable = http.urldecode(request.body);
+    local parsedTable = http.jsondecode(responseTable.body);
+    res.send(200, "okay");    
+    
+    local trigger = { 
+        FeedID = parsedTable.environment.id,
+        FeedName = parsedTable.environment.title,
+        StreamID = parsedTable.triggering_datastream.id,
+        ThresholdValue = parsedTable.threshold_value,
+        CurrentValue = parsedTable.triggering_datastream.value.value,
+        TriggeredAt = parsedTable.timestamp,
+        Debug = parsedTable.debug }
+    if (trigger.Debug) {
+        server.log(trigger.FeedID + "(" + trigger.StreamID + ") triggered at " + trigger.TriggeredAt + ": " + trigger.CurrentValue + " / " + trigger.ThresholdValue);
+    }
+    
+    local callback = null;
+    for (local i = 0; i < Xively.triggers.len(); i++)
+    {
+        if (Xively.triggers[i].FeedID = trigger.FeedID && Xively.triggers[i].StreamID == trigger.StreamID)
+        {
+            callback = Xively.triggers[i].Callback;
+            break;
+        }
+    }
+    if (callback == null){
+        server.log("Unknown trigger from Xively - to create a callback for this trigger add the following line to your agent code:");
+        server.log("Xively.On(\"" + trigger.FeedID + "\", \"" + trigger.StreamID + "\", triggerCallback);");
+        return;
+    }
+    callback(trigger);
+}
+
+http.onrequest(function(req, resp) {
+    if (req.path == "/xively") Xively.HttpHandler(req, resp);
+});
+
+/***************************************************** END OF API CODE *****************************************************/
