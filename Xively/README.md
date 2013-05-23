@@ -15,8 +15,8 @@ This library requires your account to have access to the IDE + Agent beta. If yo
 - Modify the Xively object in the agent to correspond to your FEED_ID and API_KEY:
 
 	Xively <- {
-    	FEED_ID = "FEED_IT"
-	    API_KEY = "API_KEY"
+		FEED_ID = "FEED_IT"
+		API_KEY = "API_KEY"
 	}
 	
 - Write your code below the /*** END OF API CODE ***/ in the agent and device windows.
