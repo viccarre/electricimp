@@ -5,47 +5,6 @@ Xively <- {
     triggers = []
 }
 
-class Xively.Feed{
-    FeedID = null;
-    Channels = null;
-    
-    constructor(feedID, channels)
-    {
-        this.FeedID = feedID;
-        this.Channels = channels;
-    }
-    
-    function GetFeedID() { return FeedID; }
-
-    function ToJson()
-    {
-        local json = "{ \"datastreams\": [";
-        for (local i = 0; i < this.Channels.len(); i++)
-        {
-            json += this.Channels[i].ToJson();
-            if (i < this.Channels.len() - 1) json += ",";
-        }
-        json += "] }";
-        return json;
-    }
-}
-
-class Xively.Channel{
-    id = null;
-    current_value = null;
-    
-    constructor(_id)
-    {
-        this.id = _id;
-    }
-    
-    function Set(value) { this.current_value = value; }
-    
-    function Get() { return this.current_value; }
-    
-    function ToJson() { return "{ \"id\" : \"" + this.id + "\", \"current_value\" : \"" + this.current_value + "\" }"; }    
-}
-
 /*****************************************
  * method: PUT
  * IN:
@@ -55,7 +14,8 @@ class Xively.Channel{
  *   HttpResponse object from Xively
  *   200 and no body is success
  *****************************************/
-function Xively::Put(feed, ApiKey){
+function Xively::Put(feed, ApiKey = Xively.API_KEY){
+    if (ApiKey == null) ApiKey = Xively.API_KEY;
     local url = "https://api.xively.com/v2/feeds/" + feed.FeedID + ".json";
     local headers = { "X-ApiKey" : ApiKey, "Content-Type":"application/json", "User-Agent" : "Xively-Imp-Lib/1.0" };
     local request = http.put(url, headers, feed.ToJson());
@@ -72,7 +32,7 @@ function Xively::Put(feed, ApiKey){
  *   An updated XivelyFeed object on success
  *   null on failure
  *****************************************/
-function Xively::Get(feed, ApiKey){
+function Xively::Get(feed, ApiKey = Xively.API_KEY){
     local url = "https://api.xively.com/v2/feeds/" + feed.FeedID + ".json";
     local headers = { "X-ApiKey" : ApiKey, "User-Agent" : "xively-Imp-Lib/1.0" };
     local request = http.get(url, headers);
@@ -98,6 +58,46 @@ function Xively::Get(feed, ApiKey){
     return feed;
 }
 
+class Xively.Feed{
+    FeedID = null;
+    Channels = null;
+    
+    constructor(feedID, channels)
+    {
+        this.FeedID = feedID;
+        this.Channels = channels;
+    }
+    
+    function GetFeedID() { return FeedID; }
+
+    function ToJson()
+    {
+        local json = "{ \"datastreams\": [";
+        for (local i = 0; i < this.Channels.len(); i++)
+        {
+            json += this.Channels[i].ToJson();
+            if (i < this.Channels.len() - 1) json += ",";
+        }
+        json += "] }";
+        return json;
+    }
+}
+class Xively.Channel{
+    id = null;
+    current_value = null;
+    
+    constructor(_id)
+    {
+        this.id = _id;
+    }
+    
+    function Set(value) { this.current_value = value; }
+    
+    function Get() { return this.current_value; }
+    
+    function ToJson() { return "{ \"id\" : \"" + this.id + "\", \"current_value\" : \"" + this.current_value + "\" }"; }    
+}
+
 device.on("XivelyFeed", function(data) {
     local channels = [];
     for(local i = 0; i < data.Datastreams.len(); i++)
@@ -110,7 +110,6 @@ device.on("XivelyFeed", function(data) {
     local resp = Xively.Put(feed, Xively.API_KEY);
     server.log("Send data to Xively (FeedID: " + feed.FeedID + ") - " + resp.statuscode + " " + resp.body);
 });
-
 function Xively::On(feedID, streamID, callback) {
     if (Xively.triggers == null) Xively.triggers = [];
     // Make sure the trigger doesn't already exist
@@ -123,7 +122,6 @@ function Xively::On(feedID, streamID, callback) {
     }
     Xively.triggers.push({ FeedID = feedID, StreamID = streamID, Callback = callback });
 }
-
 function Xively::HttpHandler(request,res) {
     local responseTable = http.urldecode(request.body);
     local parsedTable = http.jsondecode(responseTable.body);
@@ -157,9 +155,7 @@ function Xively::HttpHandler(request,res) {
     }
     callback(trigger);
 }
-
 http.onrequest(function(req, resp) {
     if (req.path == "/xively") Xively.HttpHandler(req, resp);
 });
-
 /***************************************************** END OF API CODE *****************************************************/
