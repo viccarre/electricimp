@@ -1,7 +1,7 @@
 # Xively Electric Imp Library
-A library for easy bi-directional communication between Xively and an Electric Imp.
+A library for easy bi-directional communication between Xively and Electric Imp.
 
-This library requires your account to have access to the IDE + Agent beta. If you do not have access, please email info@electricimp.com.
+This library requires your account to have access to the IDE + Agent beta. If you do not have access and would like to use the library, please email info@electricimp.com.
 
 ## Features
 - Generic functions for
@@ -11,7 +11,7 @@ This library requires your account to have access to the IDE + Agent beta. If yo
   
 ## Usage
 - Copy and paste the agent.nut into your agent window.
-- Write you agent below the /*** END OF API CODE ***/ line
+- Write your agent below the /*** END OF API CODE ***/ line
 
 ### Setting up your Xively Credentials
 
