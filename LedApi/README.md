@@ -12,5 +12,7 @@ This is a sample project for the Electric Imp that demonstrates how to control h
 	    
 ### Return Codes
 200 - On Success
+
 501 - Invalid JSON
+
 404 - Unknown URL path
