@@ -1,7 +1,3 @@
-/*****************************************************
- * This software is released into the public domain. *
- *****************************************************/
-
 // This is a way to make a "namespace"
 Xively <- {
     FEED_ID = "FEED_ID"
