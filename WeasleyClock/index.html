@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<title>Location Clock</title>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+	<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script type="text/javascript">
+
+	function sendLocation(loc) {
+		$.ajax({
+			url: "https://agent.electricimp.com/m9ZNZuj-Ka-b",
+			type: "POST",
+			data: { location : loc },
+			dataType: "json",
+			success: function (result) {
+			}
+		});
+	};
+
+	function sendZeroCommand() {
+		$.ajax({
+			url: "https://agent.electricimp.com/m9ZNZuj-Ka-b",
+			type: "POST",
+			data: { zero : 0 },
+			dataType: "json",
+			success: function (result) {
+			}
+		});
+	}
+	
+	</script>
+
+</head>
+<body>
+	<div class="container">
+		<h1>Where are you?</h1>
+		<ul class="nav nav-tabs nav-stacked">
+			<li><a href="#" onclick="sendLocation('home')">Home</a></li>
+			<li><a href="#" onclick="sendLocation('relax')">Relax</a></li>
+			<li><a href="#" onclick="sendLocation('coffee')">Coffee</a></li>
+			<li><a href="#" onclick="sendLocation('prison')">Prison</a></li>
+			<li><a href="#" onclick="sendLocation('lost')">Lost</a></li>
+			<li><a href="#" onclick="sendLocation('travel')">Travel</a></li>
+			<li><a href="#" onclick="sendLocation('work')">Work</a></li>
+			<li><a href="#" onclick="sendLocation('hospital')">Hospital</a></li>
+		</ul>
+		<ul class="nav nav-tabs nav-stacked">
+			<li><a class="btn btn-danger" href="#" onclick="sendZeroCommand()">Zero clock</a></li>
+		</ul>
+	</div>
+</body>
+</html> 
