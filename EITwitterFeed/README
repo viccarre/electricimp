@@ -1,0 +1,23 @@
+
+Application: EITwitterFeed
+Date: May 30th, 2013
+Author: Aron
+
+Summary: This is a node.js application which monitors the Twitter stream and serves up the tweets to long polling clients as JSON data.
+
+Instructions:
+
+Edit the config.js file to include your Twitter developer API credentials.
+Run the software on any node.js server with the command "node twitter". Use "supervisord" or equivalent to keep it running in the background.
+Use HTTP to GET or POST the service path (see below) and you will either timeout or receive a JSON array back.
+The JSON array will contain the following fields:
+
+{ screen_name: "blindman2k", text: "Welcome to twitter" }
+
+Interfaces: 
+
+For a single track (search word), use GET /follow/:track:
+For multiple tracks, POST /follow with the header "Content-Type: application/json" set and include the following raw JSON data.
+
+{"tracks": ["searchword1", "searchword2"]}
+
