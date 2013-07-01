@@ -67,6 +67,7 @@ THE SOFTWARE.
 	Xively.Put(feed, Xively.API_KEY);
 
 ### Acting on Triggers from Xively
+The callback function MUST include a single parameter that contains the trigger data.
 
 	// Create a trigger
 	Xively.On(Xively.FEED_ID, "Temperature", function(trigger) {
