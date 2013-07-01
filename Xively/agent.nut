@@ -134,8 +134,10 @@ function Xively::HttpHandler(request,res) {
         ThresholdValue = parsedTable.threshold_value,
         CurrentValue = parsedTable.triggering_datastream.value.value,
         TriggeredAt = parsedTable.timestamp,
-        Debug = parsedTable.debug }
-    if (trigger.Debug) {
+        Debug = false
+	};
+    if ("debug" in parsedTable) {
+    	trigger.Debug = true;
         server.log(trigger.FeedID + "(" + trigger.StreamID + ") triggered at " + trigger.TriggeredAt + ": " + trigger.CurrentValue + " / " + trigger.ThresholdValue);
     }
     
