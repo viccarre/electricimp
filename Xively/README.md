@@ -1,7 +1,7 @@
-# Xively Electric Imp Library
-A library for easy bi-directional communication between Xively and Electric Imp.
+# Xively Electric Imp Sample Code
+Sample code for easy bi-directional communication between Xively and Electric Imp.
 
-This library requires your account to have access to the IDE + Agent beta. If you do not have access and would like to use the library, please email info@electricimp.com.
+This sample code requires your account to have access to the IDE + Agent beta. If you do not have access and would like to use the sample code, please email info@electricimp.com.
 
 ## License
 The MIT License (MIT)
