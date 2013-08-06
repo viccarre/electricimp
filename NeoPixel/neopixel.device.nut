@@ -1,5 +1,5 @@
 server.log(imp.getsoftwareversion());
-imp.enableblinkup(false);
+imp.enableblinkup(true);
 
 imp.configure("NeoPixel",[],[]);
 
