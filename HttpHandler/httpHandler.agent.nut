@@ -20,6 +20,16 @@ head <- @"
 ";
 
 index <- @"
+	<script>
+	        function logSuccess(title, message) {
+            $('.container').prepend('<div class=\'alert alert-success\'><button type=\'button\' class=\'close\' data-dismiss=\'alert\'>x</button><strong>' + title + '</strong>' + message + '</div>');
+        }
+
+        function logError(title, message) {
+            $('.container').prepend('<div class=\'alert alert-error\'><button type=\'button\' class=\'close\' data-dismiss=\'alert\'>x</button><strong>' + title + '</strong>' + message + '</div>');
+        }
+
+	</script>
     <div class='container'>
         <h1 class='text-center'>Hello World</h1>
         <div class='content center'>
