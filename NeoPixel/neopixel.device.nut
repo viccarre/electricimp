@@ -66,7 +66,7 @@ function test(d = null) {
   if (currentPixel <= 0) pAdd = 1;
   currentPixel += pAdd;
   
-  for (locacl i = 0; i < 4; i++) pixels[i] = pixels[i+1];
+  for (local i = 0; i < 4; i++) pixels[i] = pixels[i+1];
   pixels[4] = currentPixel;
   
   imp.wakeup(DELAY, test);
