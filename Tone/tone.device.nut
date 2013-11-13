@@ -219,6 +219,7 @@ class Song {
     tone = null;
     song = null;
     
+    playing = null;
     currentNote = null;
     
     wakeup = null;
@@ -227,6 +228,7 @@ class Song {
         this.tone = _tone;
         this.song = _song;
 
+        this.playing = false;
         this.currentNote = 0;
     }
     
@@ -238,15 +240,23 @@ class Song {
     
     // Plays song from current position
     function Play() {
-        if (currentNote < song.len()) {
-            tone.play(song[currentNote].note, 1.4/song[currentNote].duration);
-            wakeup = timer().set(1.4/song[currentNote].duration + 0.01, Play.bindenv(this));
-            currentNote++;
+        playing = true;
+        playLoop();
+    }
+    
+    function playLoop() {
+        if (playing) {
+            if (currentNote < song.len()) {
+                tone.play(song[currentNote].note, 1.4/song[currentNote].duration);
+                wakeup = timer().set(1.4/song[currentNote].duration + 0.01, playLoop.bindenv(this));
+                currentNote++;
+            }
         }
     }
     
     // Stops playing, and saves position
     function Pause() {
+        playing = true;
         tone.stop();
         if (wakeup != null) {
             wakeup.cancel();
@@ -258,6 +268,12 @@ class Song {
     function Stop() {
         Pause();
         currentNote = 0;
+    }
+    
+    // Moves currentNote to desired position
+    function Seek(i) {
+        if (i < 0 || i >= song.len()) return;
+        currentNote = i;
     }
 }
 
