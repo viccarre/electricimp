@@ -32,7 +32,7 @@ class neoPixels {
     // Clears (but does not output) the frame buffer.
     function clearFrame() {
       for (local p = 0; p < frameSize; p++) writePixel(p,0,0,0);
-      for (local i = 0; i < 40; i++) frame.writen(0x00,'c');
+      for (local i = 0; i < 20; i++) frame.writen(0x00,'c');
     }
     
     // Writes the current frame buffer to the PixelStrip
